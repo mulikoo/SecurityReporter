@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "issue_severity": "High",
+      "issue_text": "Использование жестко заданного пароля",
+      "filename": "database.py",
+      "line_number": 42
+    },
+    {
+      "issue_severity": "Medium",
+      "issue_text": "Слабый алгоритм шифрования",
+      "filename": "auth.py",
+      "line_number": 15
+    }
+  ]
+}
