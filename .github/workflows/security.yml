@@ -9,11 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Обновил до v4
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Обновил до v5
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -27,13 +25,15 @@ jobs:
         run: |
           bandit -r . -f json -o bandit_report.json || true
 
+      # ИСПРАВЛЕНИЕ 1: Заходим в папку перед запуском
       - name: Generate HTML Report
         run: |
-          python security_reporter/main.py --bandit bandit_report.json
+          cd security_reporter
+          python main.py --bandit ../bandit_report.json
 
-      # ГЛАВНОЕ ИСПРАВЛЕНИЕ: v3 -> v4
+      # ИСПРАВЛЕНИЕ 2: Указываем полный путь к готовому отчету
       - name: Upload Report
         uses: actions/upload-artifact@v4
         with:
           name: Security-HTML-Report
-          path: output/security_report.html
+          path: security_reporter/output/security_report.html
