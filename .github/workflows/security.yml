@@ -1,47 +1,39 @@
-name: Security Check # Имя нашего робота/процесса
+name: Security Check
 
-# Когда запускать?
 on:
-  push:              # Запускать при каждой отправке кода (push)
-    branches: [ "main" ] # ... в ветку main
+  push:
+    branches: [ "main" ]
 
 jobs:
-  my-security-scan:  # Название задачи
-    runs-on: ubuntu-latest  # Робот использует компьютер на Linux (Ubuntu)
+  my-security-scan:
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. Робот скачивает твой код себе
+      # Обновил до v4
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Робот устанавливает Python
+      # Обновил до v5
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      # 3. Робот ставит библиотеки (Bandit и те, что нужны для твоего репортера)
       - name: Install dependencies
         run: |
           pip install bandit jinja2 requests
 
-      # 4. Робот запускает сканирование Bandit (настоящее, не по файлу!)
-      # Он сканирует текущую папку (.) и сохраняет результат в json
       - name: Run Bandit Scan
         run: |
           bandit -r . -f json -o bandit_report.json || true
-        # "|| true" нужно, чтобы робот не остановился, если найдет ошибки. 
-        # Мы хотим, чтобы он продолжил и сгенерировал отчет.
 
-      # 5. Робот запускает ТВОЙ скрипт
-      # Обрати внимание на путь: security_reporter/main.py
       - name: Generate HTML Report
         run: |
           python security_reporter/main.py --bandit bandit_report.json
 
-      # 6. Робот берет созданный HTML и "выгружает" его, чтобы ты мог скачать
+      # ГЛАВНОЕ ИСПРАВЛЕНИЕ: v3 -> v4
       - name: Upload Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Security-HTML-Report  # Имя архива для скачивания
-          path: output/security_report.html # Какой файл забрать
+          name: Security-HTML-Report
+          path: output/security_report.html
